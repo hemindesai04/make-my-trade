@@ -1,0 +1,31 @@
+[project]
+name = "make-my-trade"
+version = "0.1.0"
+description = "Automated system to develop, run and test trading strategies"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alpaca-py>=0.42.1",
+    "requests>=2.32.5",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.1",
+    "uv>=0.8.23",
+]
+
+[tool.ruff]
+# The version of Python to use for linting and formatting.
+target-version = "py313"
+line-length = 125
+
+[tool.ruff.lint]
+# Enable specific lint rules or rule sets
+select = [
+    "E", # Error
+    "F", # Pyflakes
+    "I", # isort (for import sorting)
+    "B", # flake8-bugbear
+    # Add other rule codes or presets as needed
+]
