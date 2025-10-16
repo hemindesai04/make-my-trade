@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 from strategies.base import StrategyBase
@@ -10,6 +9,7 @@ class EMAcrossoverStrategy(StrategyBase):
     Buy when short EMA crosses above long EMA which shows uptrend.
     Sell when short EMA crosses below long EMA which shows downtrend.
     """
+
     def __init__(self, short_ema: int = 8, long_ema: int = 21):
         self.short_ema = short_ema
         self.long_ema = long_ema
@@ -41,4 +41,3 @@ class EMAcrossoverStrategy(StrategyBase):
 
     def handle_order(self, current_price, signals):
         return super().handle_order(current_price, signals)
-

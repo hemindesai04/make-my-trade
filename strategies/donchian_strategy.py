@@ -1,6 +1,7 @@
 import pandas as pd
 from strategies.base import StrategyBase
 
+
 class FilteredDonchianStrategy(StrategyBase):
     """
     Donchian channel breakout strategy with:
@@ -24,7 +25,7 @@ class FilteredDonchianStrategy(StrategyBase):
         atr_period: int = 14,
         atr_mult_entry: float = 1.5,
         sma_trend: int = 200,
-        sma_mom: int = 50
+        sma_mom: int = 50,
     ):
         self.data = df.copy()
         self.initial_capital = initial_capital
@@ -57,11 +58,10 @@ class FilteredDonchianStrategy(StrategyBase):
         df["donchian_low_exit"] = df["low"].shift(1).rolling(self.donchian_exit).min()
 
         # ATR calculation
-        tr = pd.concat([
-            df["high"] - df["low"],
-            (df["high"] - df["close"].shift(1)).abs(),
-            (df["low"] - df["close"].shift(1)).abs()
-        ], axis=1).max(axis=1)
+        tr = pd.concat(
+            [df["high"] - df["low"], (df["high"] - df["close"].shift(1)).abs(), (df["low"] - df["close"].shift(1)).abs()],
+            axis=1,
+        ).max(axis=1)
         df["atr"] = tr.rolling(self.atr_period, min_periods=1).mean()
 
         # Volatility filter
@@ -117,19 +117,21 @@ class FilteredDonchianStrategy(StrategyBase):
             "stop_price": stop_price,
             "size": size,
             "closed": False,
-            "entry_time": row.name
+            "entry_time": row.name,
         }
         self.positions.append(pos)
 
         # Log trade
-        self.trade_log.append({
-            "time": row.name,
-            "side": "long" if signal == 1 else "short",
-            "price": current_price,
-            "size": size,
-            "stop_price": stop_price,
-            "capital": self.capital
-        })
+        self.trade_log.append(
+            {
+                "time": row.name,
+                "side": "long" if signal == 1 else "short",
+                "price": current_price,
+                "size": size,
+                "stop_price": stop_price,
+                "capital": self.capital,
+            }
+        )
 
     # ------------------------
     # Backtest
@@ -159,12 +161,9 @@ class FilteredDonchianStrategy(StrategyBase):
             # Track equity
             unrealized = sum(
                 (price - p["entry_price"]) * p["size"] if p["side"] == 1 else (p["entry_price"] - price) * p["size"]
-                for p in self.positions if not p["closed"]
+                for p in self.positions
+                if not p["closed"]
             )
             self.equity_curve.append({"time": idx, "equity": self.capital + unrealized})
 
-        return {
-            "capital": self.capital,
-            "trade_log": self.trade_log,
-            "equity_curve": self.equity_curve
-        }
+        return {"capital": self.capital, "trade_log": self.trade_log, "equity_curve": self.equity_curve}

@@ -14,11 +14,11 @@ class DonchianATRStrategy(StrategyBase):
 
     def __init__(
         self,
-        donchian_entry=55,      # slow channel for entries (e.g., 55-period)
-        donchian_exit=20,       # fast channel for exits (e.g., 20-period)
-        atr_period=21,          # ATR lookback (21)
-        atr_mult_entry=1.0,     # require today's range > atr_mult_entry * ATR median to consider entry
-        sma_trend=200,          # optional long-term trend filter (set None to disable)
+        donchian_entry=55,  # slow channel for entries (e.g., 55-period)
+        donchian_exit=20,  # fast channel for exits (e.g., 20-period)
+        atr_period=21,  # ATR lookback (21)
+        atr_mult_entry=1.0,  # require today's range > atr_mult_entry * ATR median to consider entry
+        sma_trend=200,  # optional long-term trend filter (set None to disable)
         sma_mom: int = 10,
     ):
         self.donchian_entry = donchian_entry
@@ -27,7 +27,6 @@ class DonchianATRStrategy(StrategyBase):
         self.atr_mult_entry = atr_mult_entry
         self.sma_trend = sma_trend
         self.sma_mom = sma_mom
-
 
     def generate_signals(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.copy()

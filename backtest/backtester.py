@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 import numpy as np
 
+
 class Backtester:
     def __init__(self, strategy, data, initial_capital=10000):
         self.strategy = strategy

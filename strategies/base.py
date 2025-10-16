@@ -7,6 +7,7 @@ class StrategyBase(ABC):
     """
     Strategy class with functions to generate signals, execute trades and backtest the strategy.
     """
+
     @abstractmethod
     def generate_signals(self, historical_data: pd.DataFrame):
         """
