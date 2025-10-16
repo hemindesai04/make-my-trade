@@ -13,7 +13,7 @@ def run_strategy(symbol, data, logger):
     from backtest.backtester import Backtester
 
     # Ensure we have OHLC columns
-    required_columns = ['open', 'high', 'low', 'close']
+    required_columns = ["open", "high", "low", "close"]
     if not all(col in data.columns for col in required_columns):
         logger.error(f"Missing required OHLC columns in data for {symbol}")
         return None
@@ -31,9 +31,9 @@ def run_strategy(symbol, data, logger):
         if metrics:
             if isinstance(metrics, dict):
                 logger.info(f"Final Portfolio Value : ${metrics.get('final_capital', 0):,.2f}")
-                logger.info(f"CAGR                  : {metrics.get('cagr', 0)*100:.2f}%")
+                logger.info(f"CAGR                  : {metrics.get('cagr', 0) * 100:.2f}%")
                 logger.info(f"Sharpe Ratio          : {metrics.get('sharpe', 0):.2f}")
-                logger.info(f"Max Drawdown          : {metrics.get('max_drawdown', 0)*100:.2f}%")
+                logger.info(f"Max Drawdown          : {metrics.get('max_drawdown', 0) * 100:.2f}%")
                 logger.info(f"Avg Trades / Day      : {metrics.get('avg_trades_per_day', 0):.2f}")
                 logger.info(f"Avg Trades / Month    : {metrics.get('avg_trades_per_month', 0):.2f}")
 
@@ -45,35 +45,41 @@ def run_strategy(symbol, data, logger):
         logger.error(f"Error running strategy for {symbol}: {str(e)}")
         return None
 
+
 def main():
-    logger = setup_logging('AlpacaFetcher', logging.DEBUG)
+    logger = setup_logging("AlpacaFetcher", logging.DEBUG)
     logger.info("Hello from make-my-trade!")
 
     # Initialize data fetcher
     alpaca_fetcher = DataFetcherFactory.get_fetcher("alpaca")
 
     # Fetch BTC data
-    btc_df = alpaca_fetcher.get_historical_data(
-        start_date=datetime(2015, 1, 1),
-        end_date=datetime(2025, 12, 31),
-        ticker=CryptoTicker.BTC_USD,
-        timeframe=DataTimeFrame.Minute
+    # btc_df = alpaca_fetcher.get_historical_crypto_data(
+    #     start_date=datetime(2015, 1, 1),
+    #     end_date=datetime(2025, 12, 31),
+    #     ticker=CryptoTicker.BTC_USD,
+    #     timeframe=DataTimeFrame.Minute
+    # )
+    # logger.info(f"Retrieved {len(btc_df)} rows of BTC data")
+
+    # # Fetch ETH data
+    # eth_df = alpaca_fetcher.get_historical_crypto_data(
+    #     start_date=datetime(2015, 1, 1),
+    #     end_date=datetime(2025, 12, 31),
+    #     ticker=CryptoTicker.ETH_USD,
+    #     timeframe=DataTimeFrame.Minute
+    # )
+    # logger.info(f"Retrieved {len(eth_df)} rows of ETH data")
+
+    # # Run strategy for both symbols
+    # btc_results = run_strategy("BTC-USD", btc_df, logger)
+    # eth_results = run_strategy("ETH-USD", eth_df, logger)
+
+    # Fetch QQQ data
+    qqq_df = alpaca_fetcher.get_historical_stocks_data(
+        start_date=datetime(2015, 1, 1), end_date=datetime(2025, 10, 14), ticker="QQQ", timeframe=DataTimeFrame.Minute
     )
-    logger.info(f"Retrieved {len(btc_df)} rows of BTC data")
-
-    # Fetch ETH data
-    eth_df = alpaca_fetcher.get_historical_data(
-        start_date=datetime(2015, 1, 1),
-        end_date=datetime(2025, 12, 31),
-        ticker=CryptoTicker.ETH_USD,
-        timeframe=DataTimeFrame.Minute
-    )
-    logger.info(f"Retrieved {len(eth_df)} rows of ETH data")
-
-    # Run strategy for both symbols
-    btc_results = run_strategy("BTC-USD", btc_df, logger)
-    eth_results = run_strategy("ETH-USD", eth_df, logger)
-
+    logger.info(f"Retrieved {len(qqq_df)} rows of QQQ data")
 
     # df = from_csv("/Users/hemin/Projects/makemytrade/make-my-trade/data/crypto/eth_usd_mins_2015_2_2025.csv")
     # # strategy = FilteredDonchianStrategy(df)
@@ -126,7 +132,7 @@ def main():
     # print(btc_df)
     # call to transform 1-min bars to 15-min bars
     # transform_15min_bars(Path("/Users/hemin/Projects/makemytrade/make-my-trade/data/crypto/btc_usd_mins_2015_2_2025.csv"),
-                        # Path("/Users/hemin/Projects/makemytrade/make-my-trade/data/crypto/btc_usd_15mins_2015_2_2025.csv"))
+    # Path("/Users/hemin/Projects/makemytrade/make-my-trade/data/crypto/btc_usd_15mins_2015_2_2025.csv"))
 
 
 if __name__ == "__main__":

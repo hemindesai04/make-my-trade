@@ -2,8 +2,10 @@ import os
 import pandas as pd
 import hashlib
 
+
 class DataCache:
     """Simple file-based cache for historical data."""
+
     CACHE_DIR = "datasets/cache"
 
     @staticmethod

@@ -6,28 +6,30 @@ from datetime import datetime
 from pandas import DataFrame
 import logging
 
+
 class KrakenFetcher(DataFetcherBase):
     def __init__(self):
         # No keys required for crypto data
         self.client = None  # Replace with actual client initialization
-        self.logger = setup_logging('KrakenFetcher', logging.DEBUG)
+        self.logger = setup_logging("KrakenFetcher", logging.DEBUG)
 
-    def get_historical_data(self, start_date: datetime, end_date: datetime,
-                          ticker: CryptoTicker, **kwargs) -> DataFrame:
+    def get_historical_crypto_data(
+        self, start_date: datetime, end_date: datetime, ticker: CryptoTicker, **kwargs
+    ) -> DataFrame:
         try:
             # Get timeframe from kwargs or use default
-            timeframe = kwargs.get('timeframe', '1d')  # Default to 1 day
+            timeframe = kwargs.get("timeframe", "1d")  # Default to 1 day
             self.logger.debug(f"Fetching data for {ticker.value} from {start_date} to {end_date} with timeframe {timeframe}")
-            
+
             # Check cache first
             self.logger.debug("Checking cache for existing data")
             cached_data = DataCache.get(
                 symbol=ticker.value,
-                start=start_date.strftime('%Y-%m-%d'),
-                end=end_date.strftime('%Y-%m-%d'),
-                timeframe=str(timeframe)
+                start=start_date.strftime("%Y-%m-%d"),
+                end=end_date.strftime("%Y-%m-%d"),
+                timeframe=str(timeframe),
             )
-            
+
             if cached_data is not None:
                 self.logger.info(f"Retrieved cached data for {ticker.value}")
                 self.logger.debug(f"Cached data shape: {cached_data.shape}")
@@ -44,10 +46,10 @@ class KrakenFetcher(DataFetcherBase):
                 self.logger.debug("Caching the retrieved data")
                 DataCache.set(
                     symbol=ticker.value,
-                    start=start_date.strftime('%Y-%m-%d'),
-                    end=end_date.strftime('%Y-%m-%d'),
+                    start=start_date.strftime("%Y-%m-%d"),
+                    end=end_date.strftime("%Y-%m-%d"),
                     timeframe=str(timeframe),
-                    df=data
+                    df=data,
                 )
                 self.logger.info(f"Successfully cached data for {ticker.value}")
             else:
@@ -58,3 +60,6 @@ class KrakenFetcher(DataFetcherBase):
         except Exception as e:
             self.logger.error(f"Error fetching data for {ticker.value}: {str(e)}", exc_info=True)
             raise
+
+    def get_historical_stocks_data(self, start_date: datetime, end_date: datetime, ticker: str, **kwargs) -> DataFrame:
+        raise NotImplementedError("Stock data fetching not implemented for KrakenFetcher.")
